@@ -9,7 +9,8 @@ import {
 import { loadProfile, saveProfile, updateStreak } from './profile.js';
 import {
   ensureSignedIn, getUserId, normalizeGuildCode, isValidGuildCode,
-  hasPlayedToday, submitScore, fetchDailyLeaderboard, fetchSeasonLeaderboard
+  hasPlayedToday, submitScore, fetchDailyLeaderboard,
+  fetchSeasonLeaderboard, fetchGlobalLeaderboard
 } from './firebase.js';
 import * as ui from './ui.js';
 
@@ -20,7 +21,7 @@ let m_profile = loadProfile();
 let m_dungeon = null;
 let m_run = null;
 let m_selectedArchetype = 'guerrier';
-let m_seasonTab = false;
+let m_leaderboardMode = 'daily';
 let m_alreadySubmitted = false;
 
 function persist() {
@@ -35,15 +36,19 @@ function getSeasonStartKey() {
 }
 
 async function refreshLeaderboard() {
-  if (m_profile.activeGuild.length === 0) {
-    ui.renderLeaderboard([], getUserId(), m_seasonTab);
-  } else if (m_seasonTab) {
-    const entries = await fetchSeasonLeaderboard(m_profile.activeGuild, getSeasonStartKey());
-    ui.renderLeaderboard(entries, getUserId(), true);
+  let entries = [];
+
+  if (m_leaderboardMode === 'global') {
+    entries = await fetchGlobalLeaderboard();
+  } else if (m_profile.activeGuild.length === 0) {
+    entries = [];
+  } else if (m_leaderboardMode === 'season') {
+    entries = await fetchSeasonLeaderboard(m_profile.activeGuild, getSeasonStartKey());
   } else {
-    const entries = await fetchDailyLeaderboard(m_profile.activeGuild, m_dungeon.dailyKey);
-    ui.renderLeaderboard(entries, getUserId(), false);
+    entries = await fetchDailyLeaderboard(m_profile.activeGuild, m_dungeon.dailyKey);
   }
+
+  ui.renderLeaderboard(entries, getUserId(), m_leaderboardMode);
 }
 
 function buildHubStatus() {
@@ -76,7 +81,7 @@ async function showHub() {
   );
 
   ui.renderGuilds(m_profile, onSelectGuild, onRemoveGuild);
-  ui.setActiveTab(m_seasonTab);
+  ui.setActiveTab(m_leaderboardMode);
   ui.showScreen('screenHub');
   await refreshLeaderboard();
 }
@@ -215,16 +220,13 @@ function bindEvents() {
   document.getElementById('btnCopyShare').addEventListener('click', onCopyShare);
   document.getElementById('btnBackToHub').addEventListener('click', showHub);
 
-  document.getElementById('btnTabDaily').addEventListener('click', async () => {
-    m_seasonTab = false;
-    ui.setActiveTab(false);
-    await refreshLeaderboard();
-  });
-
-  document.getElementById('btnTabSeason').addEventListener('click', async () => {
-    m_seasonTab = true;
-    ui.setActiveTab(true);
-    await refreshLeaderboard();
+  ['daily', 'season', 'global'].forEach((mode) => {
+    const buttonId = `btnTab${mode.charAt(0).toUpperCase()}${mode.slice(1)}`;
+    document.getElementById(buttonId).addEventListener('click', async () => {
+      m_leaderboardMode = mode;
+      ui.setActiveTab(mode);
+      await refreshLeaderboard();
+    });
   });
 
   document.getElementById('inputGuildCode').addEventListener('input', (event) => {
