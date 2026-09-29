@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Le Donjon du Jour</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <section id="screenLoading" class="screen active">
+    <h1>Le Donjon du Jour</h1>
+    <p class="muted" id="loadingMessage">Connexion en cours...</p>
+  </section>
+
+  <section id="screenSetup" class="screen">
+    <h1>Votre personnage</h1>
+    <p class="subtitle">Il vous accompagnera chaque jour</p>
+    <input type="text" id="inputPlayerName" maxlength="18" placeholder="Votre nom d'aventurier">
+    <h2>Archetype</h2>
+    <div class="archetypeGrid" id="archetypeGrid"></div>
+    <button type="button" class="primary" id="btnCreateCharacter">Entrer dans la legende</button>
+  </section>
+
+  <section id="screenHub" class="screen">
+    <div class="topBar">
+      <span id="hubIdentity"></span>
+      <span class="badge" id="hubStreak"></span>
+    </div>
+
+    <h1 id="hubQuestName"></h1>
+    <p class="subtitle" id="hubThemeName"></p>
+
+    <div class="card">
+      <p id="hubObjective"></p>
+      <p class="muted" id="hubEntry"></p>
+    </div>
+
+    <button type="button" class="primary" id="btnPlay">Descendre dans le donjon</button>
+    <p class="muted" id="hubStatus"></p>
+
+    <h2>Guilde</h2>
+    <div class="row">
+      <input type="text" id="inputGuildCode" maxlength="5" placeholder="Code a 5 lettres">
+      <button type="button" id="btnJoinGuild">Rejoindre</button>
+    </div>
+    <ul class="list" id="guildList"></ul>
+
+    <h2>Classement</h2>
+    <div class="tabs">
+      <button type="button" id="btnTabDaily" class="selected">Aujourd'hui</button>
+      <button type="button" id="btnTabSeason">Saison</button>
+    </div>
+    <ul class="list" id="leaderboardList"></ul>
+  </section>
+
+  <section id="screenRun" class="screen">
+    <div class="topBar">
+      <span id="runRoomCounter"></span>
+      <span id="runStats"></span>
+    </div>
+    <div class="hpTrack"><div class="hpFill" id="runHpFill"></div></div>
+
+    <div id="runBody"></div>
+  </section>
+
+  <section id="screenEnd" class="screen">
+    <h1 id="endTitle"></h1>
+    <p class="subtitle" id="endSubtitle"></p>
+    <div class="card"><p id="endReport"></p></div>
+    <div class="shareBox" id="endShare"></div>
+    <button type="button" id="btnCopyShare">Copier le resume</button>
+    <button type="button" class="primary" id="btnBackToHub">Retour au camp</button>
+  </section>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
