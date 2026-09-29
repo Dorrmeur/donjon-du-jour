@@ -1,3 +1,10 @@
+export const STATS
+export const ARCHETYPES
+export const TWISTS
+export const QUEST_PREFIXES
+export const THEMES
+export function getThemeForDay
+  
 // Deterministic pseudo random generator. The daily seed guarantees that every
 // player faces the exact same dungeon without any server side generation.
 
