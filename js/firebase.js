@@ -158,3 +158,23 @@ export async function fetchSeasonLeaderboard(guildCode, sinceKey) {
 
   return entries;
 }
+
+// All time top scores across every guild. Single field ordering needs no index.
+export async function fetchGlobalLeaderboard() {
+  const scoresQuery = query(
+    collection(m_db, SCORES_COLLECTION),
+    orderBy('score', 'desc'),
+    limit(10)
+  );
+
+  let entries = [];
+
+  try {
+    const snapshot = await getDocs(scoresQuery);
+    entries = snapshot.docs.map((item) => item.data());
+  } catch (error) {
+    window.console.warn('Unable to load global leaderboard', error);
+  }
+
+  return entries;
+}
