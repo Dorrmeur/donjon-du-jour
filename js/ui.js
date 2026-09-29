@@ -114,7 +114,7 @@ export function renderGuilds(profile, onSelect, onRemove) {
   });
 }
 
-export function renderLeaderboard(entries, userId, isSeason) {
+export function renderLeaderboard(entries, userId, mode) {
   const container = byId('leaderboardList');
   container.innerHTML = '';
 
@@ -137,13 +137,17 @@ export function renderLeaderboard(entries, userId, isSeason) {
 
     const name = document.createElement('span');
     name.style.flex = '1';
-    name.textContent = entry.playerName || 'Anonyme';
+    name.textContent = mode === 'global'
+      ? `${entry.playerName || 'Anonyme'} [${entry.guildCode}]`
+      : (entry.playerName || 'Anonyme');
     item.appendChild(name);
 
     const value = document.createElement('span');
-    value.textContent = isSeason
-      ? `${entry.total} pts / ${entry.days} j`
-      : `${entry.score} pts`;
+    if (mode === 'season') {
+      value.textContent = `${entry.total} pts / ${entry.days} j`;
+    } else {
+      value.textContent = `${entry.score} pts`;
+    }
     item.appendChild(value);
 
     container.appendChild(item);
@@ -251,7 +255,8 @@ export function renderEnd(run, dungeon, shareText) {
   byId('endShare').textContent = shareText;
 }
 
-export function setActiveTab(isSeason) {
-  byId('btnTabDaily').classList.toggle('selected', isSeason === false);
-  byId('btnTabSeason').classList.toggle('selected', isSeason === true);
+export function setActiveTab(mode) {
+  byId('btnTabDaily').classList.toggle('selected', mode === 'daily');
+  byId('btnTabSeason').classList.toggle('selected', mode === 'season');
+  byId('btnTabGlobal').classList.toggle('selected', mode === 'global');
 }
