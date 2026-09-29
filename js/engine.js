@@ -62,6 +62,7 @@ export function createRun(dungeon, character) {
     criticals: 0,
     fumbles: 0,
     guardianDefeated: false,
+    score: 0,
     history: [],
     startedAt: new Date().toISOString()
   };
@@ -116,7 +117,10 @@ export function resolveOption(option, character) {
     damage = option.damage + 5;
   }
 
-  const outcome = { naturalRoll, modifier, total, margin, tier, isSuccess, lootGain, damage };
+  const outcome = {
+    stat: option.stat,
+    naturalRoll, modifier, total, margin, tier, isSuccess, lootGain, damage
+  };
   return outcome;
 }
 
