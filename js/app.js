@@ -232,6 +232,13 @@ function bindEvents() {
   });
 }
 
+function refreshArchetypeChoices() {
+  ui.renderArchetypeChoices(m_selectedArchetype, (archetypeId) => {
+    m_selectedArchetype = archetypeId;
+    refreshArchetypeChoices();
+  });
+}
+
 async function bootstrap() {
   try {
     bindEvents();
@@ -254,10 +261,7 @@ async function bootstrap() {
     }
 
     if (m_profile.character === null) {
-      ui.renderArchetypeChoices(m_selectedArchetype, (archetypeId) => {
-        m_selectedArchetype = archetypeId;
-        ui.renderArchetypeChoices(archetypeId, arguments.callee);
-      });
+      refreshArchetypeChoices();
       ui.showScreen('screenSetup');
     } else {
       await showHub();
